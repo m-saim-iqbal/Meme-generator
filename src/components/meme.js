@@ -12,6 +12,8 @@ export default function Meme() {
     })
     const [allMemeImages, setAllMemeImages] = React.useState("")
 
+    const [loader, setLoader] = React.useState(false)
+    
     React.useEffect(() => {
         async function getMemes() {
             const res = await fetch('https://api.imgflip.com/get_memes')
@@ -43,21 +45,14 @@ export default function Meme() {
     }
 
     function downloadMeme() {
-        console.log("asffaf");
-        // html2canvas(document.querySelector(".meme")).then(function (canvas) {			
-        //     let anchorTag = document.createElement("a");
-        // 	anchorTag.download = "filename.jpg";
-        // 	anchorTag.href = canvas.toDataURL();
-        // 	anchorTag.target = '_blank';
-        // 	anchorTag.click();
-        // });
+        setLoader(true)
         const container = document.querySelector(".meme");
 
         html2canvas(container, {
-            scale: 25, // Set scale to 25x for full HD resolution (1920x1080)
             useCORS: true // Enable CORS to allow screenshot of external images
         }).then(canvas => {
             canvas.toBlob(blob => saveAs(blob, "download.png"));
+            setLoader(false)
         });
     }
     return (
@@ -96,7 +91,10 @@ export default function Meme() {
                     onClick={downloadMeme}>Download
                 </button>
             </div>
-
+            {loader && <div className="spinner-container">
+                <div className="loading-spinner">
+                </div>
+            </div>}
         </main>
     )
 }
